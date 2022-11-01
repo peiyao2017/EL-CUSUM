@@ -1,0 +1,148 @@
+ 
+
+opt_cusum=function(d=4,threshold=100,min0=-3,max0=3,min1=-3.5,max1=3.5){
+  c=0
+  repeat{
+    l=numeric()
+    l1=numeric()
+    repeat{
+      x0=runif(n=d,min=min0,max=max0)
+      c=c+1
+      print(c)
+      l[length(l)+1]=prod(dunif(x0,min=min1,max=max1)/dunif(x0,min=min0,max=max0))
+      
+      for(i in 1:length(l)){
+        l1[i]=sum(log(l[i:length(l)]))
+      }
+      print(max(l1))
+      if(max(l1)>threshold){
+        break
+      }
+      if(max(l1)<0){
+        break
+      }
+    }
+    if(max(l1)>threshold){
+      break
+    }
+    if(c>1000){
+      break
+    }
+  }
+  return(c)
+}
+
+
+opt1_cusum=function(d=4,threshold=100,min0=-3,max0=3,min1=-3.5,max1=3.5){
+  false=0
+  c=0
+  repeat{
+    repeat{
+      c1=0
+      l=numeric()
+      l1=numeric()
+      repeat{
+        x0=runif(n=d,min=min0,max=max0)
+        c=c+1
+        c1=c1+1
+        print(c)
+        l[c1]=prod(dunif(x0,min=min1,max=max1)/dunif(x0,min=min0,max=max0))
+        
+        for(i in 1:c1){
+          l1[i]=sum(log(l[i:c1]))
+        }
+        if(max(l1)>threshold){
+          false=false+1
+          break
+        }
+        if(max(l1)<0){
+          break
+        }
+        if(c>=49){
+          break
+        }
+        if(false>=10){
+          break
+        }
+      }
+      if(max(l1)>threshold){
+        break
+      }
+      if(c>=49){
+        break
+      }
+      if(false>=10){
+        break
+      }
+    }
+    if(c>=49){
+      break
+    }
+    if(false>=10){
+      break
+    }
+  }
+  if(false<10){
+  nodetect=0
+  repeat{
+    x0=runif(n=d,min=min1,max=max1)
+    c=c+1
+    c1=length(l)+1
+    print(c)
+    l[c1]=prod(dunif(x0,min=min1,max=max1)/dunif(x0,min=min0,max=max0))
+    for(i in 1:c1){
+      l1[i]=sum(log(l[i:c1]))
+    }
+    if(max(l1)>threshold){
+      break
+    }
+    if(max(l1)<0){
+      break
+    }
+    if(c>=1000){
+      nodetect=1
+      break
+    }
+  }
+  if(max(l1)<=threshold){
+    repeat{
+      c1=0
+      l=numeric()
+      l1=numeric()
+      repeat{
+        x0=runif(n=d,min=min1,max=max1)
+        c=c+1
+        c1=c1+1
+        print(c)
+        l[c1]=prod(dunif(x0,min=min1,max=max1)/dunif(x0,min=min0,max=max0))
+        
+        for(i in 1:c1){
+          l1[i]=sum(log(l[i:c1]))
+        }
+        if(max(l1)>threshold){
+          break
+        }
+        if(max(l1)<0){
+          break
+        }
+        if(c>=1000){
+          nodetect=1
+          break
+        }
+      }
+      if(max(l1)>threshold){
+        break
+      }
+      if(c>=1000){
+        nodetect=1
+        break
+      }
+    }
+  }
+  return(c(c-50,nodetect))
+  }
+  if(false>=10){
+    return("false")
+  }
+}
+
