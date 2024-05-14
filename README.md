@@ -8,7 +8,9 @@ output: html_document
 ---
  
 This repository contains the code to implement the methods in paper  "Nonparametric CUSUM Change-point Detection
-Procedures Based on Modified Empirical Likelihood". The purpose of each R file is indicated in the folder or file name. For example the folder "table1" conatins the code for the simulation in Table 1. The file "compute_FAP_table1_20.R" is the code to find the thresholds $a$ in Table 1 by setting false alarm probabilities at 0.05, when the sample size is 20. "Compute_ARL1_table1_20" is the code to compute $ARL_1$ in Table 1 when sample size is 20. All files were compiled to accommodate linux cluster parallel computing, and each R file has an accompanied text file for job submission.  
+Procedures Based on Modified Empirical Likelihood". The purpose of each R file is indicated in the folder or file name. For example the folder "table1" conatins the code for the simulation in Table 1. The file "compute_FAP_table1_20.R" is the code to find the thresholds $a$ in Table 1 by setting false alarm probabilities at 0.05, when the sample size is 20. "Compute_ARL1_table1_20" is the code to compute $ARL_1$ in Table 1 when sample size is 20. All files were compiled to accommodate linux cluster parallel computing, and each R file has an accompanied text file for job submission. 
+
+The folder "Reviewer_comments" contains the code for comparison purpose. We compared the output of our code with the result in reviewer comments. The two results were consistent.
 
 Before runing the code, users should install and load following packages: 
 ```{r}
