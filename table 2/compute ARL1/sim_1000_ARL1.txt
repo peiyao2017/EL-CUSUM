@@ -1,0 +1,20 @@
+#!/bin/bash -l        
+#SBATCH --time=10:00:00
+#SBATCH --ntasks=100
+#SBATCH --mem=100g
+#SBATCH --tmp=100g
+#SBATCH --mail-type=ALL  
+#SBATCH --mail-user=wan01299@umn.edu 
+#SBATCH -o "/panfs/jay/groups/20/panwei/wan01299/EL_cusum/table2/compute_ARL1_table2_1000.out"
+
+
+
+cd "/panfs/jay/groups/20/panwei/wan01299/EL_cusum/table2/"
+module load R/4.0.4 
+
+
+
+
+
+
+Rscript --save  "/panfs/jay/groups/20/panwei/wan01299/EL_cusum/table2/compute_ARL1_table2_1000.R"
