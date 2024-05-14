@@ -1,0 +1,150 @@
+---
+title: "Nonparametric CUSUM Change-point Detection
+Procedures Based on Modified Empirical Likelihood"
+author: "Peiyao Wang, Ning Wei"
+date: "2024-05-14"
+output: html_document
+ 
+---
+ 
+This repository contains the code to implement the methods in paper  "Nonparametric CUSUM Change-point Detection
+Procedures Based on Modified Empirical Likelihood". The purpose of each R file is indicated in the folder or file name. For example the folder "table1" conatins the code for the simulation in Table 1. The file "compute_FAP_table1_20.R" is the code to find the thresholds $a$ in Table 1 by setting false alarm probabilities at 0.05, when the sample size is 20. "Compute_ARL1_table1_20" is the code to compute $ARL_1$ in Table 1 when sample size is 20. All files were compiled to accommodate linux cluster parallel computing, and each R file has an accompanied text file for job submission. }
+
+Before runing the code, users should install and load following packages: 
+```{r}
+
+setwd("C:/Users/wangp/Downloads/EL_CUSUM/code")
+if (!require("doParallel")) install.packages("doParallel")
+if (!require("sn")) install.packages("sn")
+if (!require("mixsmsn")) install.packages("mixsmsn")
+if (!require("mvtnorm")) install.packages("mvtnorm")
+if (!require("ks")) install.packages("ks")
+if (!require("el.convex")) install.packages("C:/Users/wangp/Downloads/el.convex_1.0.tar.gz")
+ 
+library(el.convex)
+library(sn)
+library(mixsmsn)
+library(mvtnorm)
+library(ks)
+library(doParallel)
+library(MASS)
+```
+We create a cluster for parallel computing. This small cluster has only 2 cores for illustration purpose.
+
+```{r}
+myCluster <- makeCluster(2, # number of cores to use
+                         type = "PSOCK") # type of cluster
+registerDoParallel(myCluster)
+
+
+```
+The following code demostrate the estimation of threshold $a$. For each change-point method, we search over a range of values to find the threshold leading to false alarm probability 0.05.
+We initialize some parameters at the beginning.
+```{r}
+ 
+repetition=2 # number of repetitions of simulation is set to 2 for ease of illustration.
+d=1 #dimension of observations
+threshold_el_mean=seq(from=0,to=0.1,by=0.1) #the range of threshold to search for EL-MEAN, only for illustration.
+m=20 #training sample size
+maxobs=200 # the maximum number of observations in the sequence
+winlen=100 # window limit
+
+```
+
+The next chunk demostrate the computation of false alarm probability $FAP$ for each threshold $a$, for each method, a data frame containing different $a$ and the corresponding $FAP$ is created  and saved as a list.
+
+```{r}
+results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {
+library(el.convex)
+library(ks)
+library(el.convex)
+library(mvtnorm)
+# set distribution parameters 
+mu0=0
+mu1=0.5
+Sigma=1
+# generate training sample and compute point estimates for mean, variance, covariance matrix, and laplace transformation
+train0=matrix(rnorm(n=m*d,mean=mu0,sd=Sigma),nrow=m,ncol=d)
+train1=matrix(rnorm(n=m*d,mean=mu1,sd=Sigma),nrow=m,ncol=d)
+mu0hat=colMeans(train0)
+mu1hat=colMeans(train1)
+cov0hat=cov(train0)
+cov1hat=cov(train1)
+var0hat=diag(cov0hat)
+var1hat=diag(cov1hat)
+lap0hat=colMeans(cbind(exp(-train0%*%rep(-0.5,times=d)),exp(-train0%*%rep(0.5,times=d))))
+lap1hat=colMeans(cbind(exp(-train1%*%rep(-0.5,times=d)),exp(-train1%*%rep(0.5,times=d))))
+# generate the sequence for implementing chang-point method, a change point is created at the 50th point
+obs1=matrix(rnorm(n=49*d,mean=mu0,sd=Sigma),nrow=49,ncol=d)
+obs2=matrix(rnorm(n=(maxobs-49)*d,mean=mu1,sd=Sigma),nrow=maxobs-49,ncol=d)
+obs=rbind(obs1,obs2)
+#apply laplace transformation to observations.
+lapobs=cbind(exp(-obs%*%rep(-0.5,times=d)),exp(-obs%*%rep(0.5,times=d)))
+
+# apply estimating functions of mean, variance, and laplace transformation to data
+used_mean_obs0=matrix(0,nrow=maxobs,ncol=d)
+used_mean_obs1=matrix(0,nrow=maxobs,ncol=d)
+used_var_obs0=matrix(0,nrow=maxobs,ncol=d)
+used_var_obs1=matrix(0,nrow=maxobs,ncol=d)
+used_lap_obs0=matrix(0,nrow=maxobs,ncol=2)
+used_lap_obs1=matrix(0,nrow=maxobs,ncol=2)
+for(i in 1:maxobs){
+  used_mean_obs0[i,]=obs[i,]-mu0hat
+  used_mean_obs1[i,]=obs[i,]-mu1hat
+  used_var_obs0[i,]=obs[i,]^2-mu0hat^2-var0hat
+  used_var_obs1[i,]=obs[i,]^2-mu1hat^2-var1hat
+  used_lap_obs0[i,]=lapobs[i,]-lap0hat
+  used_lap_obs1[i,]=lapobs[i,]-lap1hat
+}
+
+# implement EL-MEAN to the output of estimating functions.
+el_mean_stop=rep(0,times=length(threshold_el_mean)) # stopping time is obtained for each candidate threshold
+for(i1 in 1:length(threshold_el_mean)){
+  g_el_mean=numeric(maxobs)
+  for (n in (d+1): maxobs) {
+  start1=seq(max(1, n-winlen), n-d)
+  lr=numeric(length(start1))
+  # compute the test statistic
+  #NAs may appear due to numeric issue, we remove NAs to avoid error
+  for (j in start1) {
+    l1=el.test.newton(x=used_mean_obs1[j:n,],mu=rep(0,times=d))
+    if (abs(sum(na.omit(c(l1$wts,0)))-1) >= .01) next
+    if (max(abs(l1$mu)) >= .01) next
+    l0=el.test.newton(x=used_mean_obs0[j:n,],mu=rep(0,times=d))
+    if (abs(sum(na.omit(c(l0$wts,0)))-1) >= .01) next
+    if (max(abs(na.omit(c(l0$mu,0)))) >= .01) next
+    lr[which(start1==j)]=(l0[["-2LLR"]] - l1[["-2LLR"]]) / 2
+  }
+  g_el_mean[n] <- max(c(na.omit(lr),0))
+  if (g_el_mean[n] >= threshold_el_mean[i1]) break # record the stopping time before 50
+  if (n >= 50) break # we only care about the false alarms before 50, so no need to continue
+  } 
+  el_mean_stop[i1]=n # record the stopping time for each threshold
+}
+
+ 
+stop_all=list(el_mean_stop=el_mean_stop) # combine the results of different  methods to a list
+              
+list(stop_all) # For each repetition, the result (the list "stop_all") is saved as an element in a list              
+}              
+ 
+# For each change-point method, we extract the result and save is at a data frame.             
+FAP_el_mean=data.frame(a=threshold_el_mean,FAP=rep(0,times=length(threshold_el_mean)),SD=rep(0,times=length(threshold_el_mean)))
+ 
+# For each candidate threshold, we extract the stopping time of the corresponding method, and compute false alarm probability
+for(i in 1:length(threshold_el_mean)){
+   stop_rep=rep(0,times=repetition)
+   for(j in 1:repetition){
+     stop_rep[j]=results[[j]]$el_mean_stop[i]
+   }
+   FAP_el_mean$FAP[i]=mean(stop_rep<50) #empirical false alarm probability
+   FAP_el_mean$SD[i]=sd(stop_rep<50) #sample standard deviation
+}
+ 
+#save all results as a list, then save the list to local drive 
+FAP=list(FAP_el_mean=FAP_el_mean) 
+
+save(FAP,file = "FAP_Table1_20.RData")
+```
+For $ARL_1$, the code is implemented in the same way, we repeat the iteration until all methods got 1000 stopping times after 50. For each method, $ARL_1$ and its sample standard deviation is saved.
+<span>
