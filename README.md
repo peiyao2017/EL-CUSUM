@@ -8,7 +8,7 @@ output: html_document
 ---
  
 This repository contains the code to implement the methods in paper  "Nonparametric CUSUM Change-point Detection
-Procedures Based on Modified Empirical Likelihood". The purpose of each R file is indicated in the folder or file name. For example the folder "table1" conatins the code for the simulation in Table 1. The file "compute_FAP_table1_20.R" is the code to find the thresholds $a$ in Table 1 by setting false alarm probabilities at 0.05, when the sample size is 20. "Compute_ARL1_table1_20" is the code to compute $ARL_1$ in Table 1 when sample size is 20. All files were compiled to accommodate linux cluster parallel computing, and each R file has an accompanied text file for job submission. }
+Procedures Based on Modified Empirical Likelihood". The purpose of each R file is indicated in the folder or file name. For example the folder "table1" conatins the code for the simulation in Table 1. The file "compute_FAP_table1_20.R" is the code to find the thresholds $a$ in Table 1 by setting false alarm probabilities at 0.05, when the sample size is 20. "Compute_ARL1_table1_20" is the code to compute $ARL_1$ in Table 1 when sample size is 20. All files were compiled to accommodate linux cluster parallel computing, and each R file has an accompanied text file for job submission.  
 
 Before runing the code, users should install and load following packages: 
 ```{r}
@@ -29,7 +29,7 @@ library(ks)
 library(doParallel)
 library(MASS)
 ```
-\textcolor{blue}{We create a cluster for parallel computing. This small cluster has only 2 cores for illustration purpose.}
+We create a cluster for parallel computing. This small cluster has only 2 cores for illustration purpose.
 
 ```{r}
 myCluster <- makeCluster(2, # number of cores to use
