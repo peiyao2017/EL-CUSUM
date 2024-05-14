@@ -147,4 +147,4 @@ FAP=list(FAP_el_mean=FAP_el_mean)
 save(FAP,file = "FAP_Table1_20.RData")
 ```
 For $ARL_1$, the code is implemented in the same way, we repeat the iteration until all methods got 1000 stopping times after 50. For each method, $ARL_1$ and its sample standard deviation is saved.
-<span>
+ 
