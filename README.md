@@ -53,7 +53,7 @@ winlen=100 # window limit
 
 ```
 
-The next chunk demostrate the computation of false alarm probability $FAP$ for each threshold $a$, for each method, a data frame containing different $a$ and the corresponding $FAP$ is created  and saved as a list.
+The next chunk demostrate the computation of false alarm probability $FAP$ for each threshold $a$, for each method, a data frame containing different $a$ and the corresponding $FAP$ is created  and saved as a list. The function foreach inplement the code with parallel computing and save the output in a list.
 
 ```{r}
 results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {
@@ -65,7 +65,7 @@ library(mvtnorm)
 mu0=0
 mu1=0.5
 Sigma=1
-# generate training sample and compute point estimates for mean, variance, covariance matrix, and laplace transformation
+# generate training sample and compute point estimates for mean, variance, covariance matrix
 train0=matrix(rnorm(n=m*d,mean=mu0,sd=Sigma),nrow=m,ncol=d)
 train1=matrix(rnorm(n=m*d,mean=mu1,sd=Sigma),nrow=m,ncol=d)
 mu0hat=colMeans(train0)
@@ -74,9 +74,10 @@ cov0hat=cov(train0)
 cov1hat=cov(train1)
 var0hat=diag(cov0hat)
 var1hat=diag(cov1hat)
+# compute point estimate for laplace transformation
 lap0hat=colMeans(cbind(exp(-train0%*%rep(-0.5,times=d)),exp(-train0%*%rep(0.5,times=d))))
 lap1hat=colMeans(cbind(exp(-train1%*%rep(-0.5,times=d)),exp(-train1%*%rep(0.5,times=d))))
-# generate the sequence for implementing chang-point method, a change point is created at the 50th point
+# generate the sequence where different chang-point methods are implemented, a change point is created at the 50th point
 obs1=matrix(rnorm(n=49*d,mean=mu0,sd=Sigma),nrow=49,ncol=d)
 obs2=matrix(rnorm(n=(maxobs-49)*d,mean=mu1,sd=Sigma),nrow=maxobs-49,ncol=d)
 obs=rbind(obs1,obs2)
