@@ -210,10 +210,10 @@ stop_all=list(el_mean_stop=el_mean_stop,
 list(stop_all)              
 }              
               
-ARL0_el_mean=data.frame(a=threshold_el_mean,ARL0=rep(0,times=length(threshold_el_mean)),SD=rep(0,times=length(threshold_el_mean)) )
-ARL0_opt=data.frame(a=threshold_opt,ARL0=rep(0,times=length(threshold_opt)),SD=rep(0,times=length(threshold_opt)) )
-ARL0_app=data.frame(a=threshold_app,ARL0=rep(0,times=length(threshold_app)),SD=rep(0,times=length(threshold_app)) )
-ARL0_ks=data.frame(a=threshold_ks,ARL0=rep(0,times=length(threshold_ks)),SD=rep(0,times=length(threshold_ks)) )
+ARL0_el_mean=data.frame(a=threshold_el_mean,ARL0=rep(0,times=length(threshold_el_mean)),SD=rep(0,times=length(threshold_el_mean)),FD=rep(0,times=length(threshold_el_mean)) )
+ARL0_opt=data.frame(a=threshold_opt,ARL0=rep(0,times=length(threshold_opt)),SD=rep(0,times=length(threshold_opt)),FD=rep(0,times=length(threshold_opt)) )
+ARL0_app=data.frame(a=threshold_app,ARL0=rep(0,times=length(threshold_app)),SD=rep(0,times=length(threshold_app)),FD=rep(0,times=length(threshold_app)) )
+ARL0_ks=data.frame(a=threshold_ks,ARL0=rep(0,times=length(threshold_ks)),SD=rep(0,times=length(threshold_ks)),FD=rep(0,times=length(threshold_ks)) )
 
 for(i in 1:length(threshold_el_mean)){
    stop_rep=rep(0,times=repetition)
@@ -222,7 +222,9 @@ for(i in 1:length(threshold_el_mean)){
    }
    ARL0_el_mean$ARL0[i]=mean(stop_rep)
    ARL0_el_mean$SD[i]=sd(stop_rep)
+   ARL0_el_mean$FD[i]=sum(stop_rep<50)
 }
+
  
 for(i in 1:length(threshold_opt)){
   stop_rep=rep(0,times=repetition)
@@ -231,7 +233,9 @@ for(i in 1:length(threshold_opt)){
   }
   ARL0_opt$ARL0[i]=mean(stop_rep)
   ARL0_opt$SD[i]=sd(stop_rep)
+  ARL0_opt$FD[i]=sum(stop_rep<50)
 }
+
 for(i in 1:length(threshold_app)){
   stop_rep=rep(0,times=repetition)
   for(j in 1:repetition){
@@ -239,7 +243,9 @@ for(i in 1:length(threshold_app)){
   }
   ARL0_app$ARL0[i]=mean(stop_rep)
   ARL0_app$SD[i]=sd(stop_rep)
+  ARL0_app$FD[i]=sum(stop_rep<50)
 }
+
 for(i in 1:length(threshold_ks)){
   stop_rep=rep(0,times=repetition)
   for(j in 1:repetition){
@@ -247,6 +253,8 @@ for(i in 1:length(threshold_ks)){
   }
   ARL0_ks$ARL0[i]=mean(stop_rep)
   ARL0_ks$SD[i]=sd(stop_rep)
+  ARL0_ks$FD[i]=sum(stop_rep<50)
+
 }  
 
 ARL0=list(ARL0_el_mean=ARL0_el_mean,
