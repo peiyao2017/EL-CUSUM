@@ -94,8 +94,8 @@ if(d>1){
   for(i in 1:maxobs){
     used_mean_obs0[i,]=obs[i,]-mu0hat
     used_mean_obs1[i,]=obs[i,]-mu1hat
-    used_var_obs0[i,]=obs[i,]^2-mu0hat^2-var0hat
-    used_var_obs1[i,]=obs[i,]^2-mu1hat^2-var1hat
+    used_var_obs0[i,]=(obs[i,]-mu0hat)^2-var0hat
+    used_var_obs1[i,]=(obs[i,]-mu1hat)^2-var1hat
     used_lap_obs0[i,]=lapobs[i,]-lap0hat
     used_lap_obs1[i,]=lapobs[i,]-lap1hat
     used_mean_and_var_obs0[i,]=c(used_mean_obs0[i,],used_var_obs0[i,])
@@ -287,10 +287,10 @@ lr=na.omit(lr)
 g_opt=numeric(length(lr))
 for(n in 1:length(lr)){
   if(n==1){
-    g_opt[n]=max(0,lr[n])
+    g_opt[n]= lr[n] 
   }
   if(n>1){
-    g_opt[n]=max(0,lr[n]+g_opt[n-1])
+    g_opt[n]=max(0,g_opt[n-1])+lr[n]
   }
   if (n >= maxobs) break
   if(g_opt[n]>threshold_opt ) break
@@ -307,10 +307,10 @@ lr=na.omit(lr)
 g_app=numeric(length(lr))
 for(n in 1:length(lr)){
   if(n==1){
-    g_app[n]=max(0,lr[n])
+    g_app[n]= lr[n] 
   }
   if(n>1){
-    g_app[n]=max(0,lr[n]+g_app[n-1])
+    g_app[n]=max(0,g_app[n-1])+lr[n]
   }
   if (n >= maxobs) break
   if(g_app[n]>threshold_app ) break
@@ -343,10 +343,10 @@ if(d>1){
 g_ks=numeric(length(lr))
 for(n in 1:length(lr)){
   if(n==1){
-    g_ks[n]=max(0,lr[n])
+    g_ks[n]= lr[n] 
   }
   if(n>1){
-    g_ks[n]=max(0,lr[n]+g_ks[n-1])
+    g_ks[n]=max(0,g_ks[n-1])+lr[n]
   }
   if (n >= maxobs) break
   if(g_ks[n]>threshold_ks) break
