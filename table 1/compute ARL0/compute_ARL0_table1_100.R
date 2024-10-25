@@ -7,16 +7,16 @@ registerDoParallel(myCluster)
 repetition=1000
 d=1
 threshold_opt=3.9
-threshold_app=4.1
-threshold_ks=4.36
-threshold_el_mean=18.5
+threshold_app=5
+threshold_ks=5.3
+threshold_el_mean=19
 threshold_el_laplace=30
-threshold_ael_mean=3.9
-threshold_ael_laplace=5.1
-threshold_tel_mean=8.9
-threshold_tel_laplace=13.3
-threshold_tael_mean=2.5
-threshold_tael_laplace=2.6
+threshold_ael_mean=4
+threshold_ael_laplace=4.8
+threshold_tel_mean=9
+threshold_tel_laplace=15
+threshold_tael_mean=2.6
+threshold_tael_laplace=2.8
 
 
 results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {

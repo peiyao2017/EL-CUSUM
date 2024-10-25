@@ -7,17 +7,17 @@ registerDoParallel(myCluster)
 repetition=1000
 d=1
 
-threshold_opt=3.9 
-threshold_app=3.9
-threshold_ks=3.97
-threshold_el_mean=17.5 
+threshold_opt=3.9
+threshold_app=4 
+threshold_ks=3.8
+threshold_el_mean=17
 threshold_el_laplace=26
 threshold_ael_mean=3.6
-threshold_ael_laplace=4.1
-threshold_tel_mean=8.5
+threshold_ael_laplace=4
+threshold_tel_mean=9 
 threshold_tel_laplace=13
-threshold_tael_mean=2.4
-threshold_tael_laplace=2.3
+threshold_tael_mean=2.5
+threshold_tael_laplace=2.5
 
 results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {
 
@@ -56,7 +56,7 @@ if(d>1){
   mu0=rep(0,times=d)
   mu1=rep(0.5,times=d)
   Sigma=diag(rep(1,times=d),nrow = d,ncol = d)
-  m=1000
+  m=200
   maxobs=10000
   winlen=100
  

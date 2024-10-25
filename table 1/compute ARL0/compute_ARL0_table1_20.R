@@ -8,16 +8,16 @@ repetition=1000
 d=1
 
 threshold_opt=3.9
-threshold_app=4.8
-threshold_ks=6.2
-threshold_el_mean=20
-threshold_el_laplace=35
-threshold_ael_mean=5.1
-threshold_ael_laplace=7
-threshold_tel_mean=9.4
-threshold_tel_laplace=18
-threshold_tael_mean=3.05
-threshold_tael_laplace=3.6
+threshold_app=9.5
+threshold_ks=12.3
+threshold_el_mean=21
+threshold_el_laplace=36
+threshold_ael_mean=5.5
+threshold_ael_laplace=7.5
+threshold_tel_mean=10
+threshold_tel_laplace=19
+threshold_tael_mean=3.3
+threshold_tael_laplace=3.8
 
 
 results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {
