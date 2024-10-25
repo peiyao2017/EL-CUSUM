@@ -5,14 +5,16 @@ myCluster <- makeCluster(80, # number of cores to use
 registerDoParallel(myCluster)
 
 repetition=1000
+
+
 d=1
 
 
-threshold_opt=0
+threshold_opt=seq(from=0,to=60,by= 0.1)
 
-threshold_app=0
+threshold_app=seq(from=0,to=60,by= 0.1)
 
-threshold_ks=0
+threshold_ks=seq(from=0,to=60,by= 0.1)
 
 threshold_el_mean=0
 
@@ -20,24 +22,21 @@ threshold_el_laplace=0
 
 threshold_ael_mean=0
 
-threshold_ael_laplace=seq(from=4,to=5,by=0.1)
+threshold_ael_laplace=0
 
 threshold_tel_mean=0
 
 threshold_tel_laplace=0
 
-threshold_tael_mean=seq(from=2,to=3 ,by=0.1)
+threshold_tael_mean=0
 
-threshold_tael_laplace=seq(from=2,to=3 ,by=0.1)
+threshold_tael_laplace=0
 
 
 
-  
-m=100
+  m=100
 maxobs=200
 winlen=100
-
-  
 
 results=foreach (i = 1:repetition, .combine='c', .multicombine=FALSE) %dopar% {
 
@@ -74,9 +73,7 @@ if(d>1){
   mu0=rep(0,times=d)
   mu1=rep(0.5,times=d)
   Sigma=diag(rep(1,times=d),nrow = d,ncol = d)
-  m=100
-  maxobs=maxobs
-  winlen=100
+   
  
   train0=rmvnorm(n=m,mean = mu0,sigma = Sigma)
   train1=rmvnorm(n=m,mean = mu1,sigma = Sigma)
@@ -105,7 +102,6 @@ for(i in 1:maxobs){
   used_mean_obs1[i,]=obs[i,]-mu1hat
   used_var_obs0[i,]=(obs[i,]-mu0hat)^2-var0hat
   used_var_obs1[i,]=(obs[i,]-mu1hat)^2-var1hat
-
   used_lap_obs0[i,]=lapobs[i,]-lap0hat
   used_lap_obs1[i,]=lapobs[i,]-lap1hat
 }
@@ -297,7 +293,7 @@ opt_stop=rep(0,times=length(threshold_opt))
 for(i1 in 1:length(threshold_opt)){
  
   if(d==1){
-    lr = dmvnorm(x=obs ,mean=mu1,sigma = diag(Sigma,nrow=d,ncol=d),log = TRUE)-dmvnorm(x=obs ,mean=mu0,sigma = diag(Sigma,nrow=d,ncol=d),log = TRUE)
+    lr = dmvnorm(x=obs ,mean=mu1,sigma = diag(Sigma,nrow=d,ncol=d),log = TRUE)-dmvnorm(x=obs ,mean=mu0,sigma = diag(Sigma,nrow=d,ncol=d),log = TRUE) 
   }
   if(d>1){
     lr = dmvnorm(x=obs ,mean=mu1,sigma = Sigma,log = TRUE)-dmvnorm(x=obs ,mean=mu0,sigma =Sigma,log = TRUE) 
@@ -320,8 +316,10 @@ opt_stop[i1]=n
 
 app_stop=rep(0,times=length(threshold_app))
 for(i1 in 1:length(threshold_app)){
+ 
    
-lr=sum(dmvnorm(x=obs ,mean=mu1hat,sigma = cov1hat,log = TRUE)-dmvnorm(x=obs ,mean=mu0hat,sigma =cov0hat,log = TRUE))
+lr = dmvnorm(x=obs ,mean=mu1hat,sigma = cov1hat,log = TRUE)-dmvnorm(x=obs ,mean=mu0hat,sigma =cov0hat,log = TRUE) 
+   
  
 lr=na.omit(lr)
 g_app=numeric(length(lr))

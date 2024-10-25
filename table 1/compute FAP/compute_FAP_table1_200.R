@@ -7,28 +7,27 @@ registerDoParallel(myCluster)
 repetition=1000
 d=1
 
-threshold_opt=0
- 
- threshold_app=0
- 
- threshold_ks=0
- 
- threshold_el_mean=0
- 
- threshold_el_laplace=0
- 
- threshold_ael_mean=seq(from=3,to=4,by=0.1)
- 
- threshold_ael_laplace=seq(from=4,to=5,by=0.1)
- 
- threshold_tel_mean=seq(from=9,to=10,by=0.1)
- 
- threshold_tel_laplace=0
- 
- threshold_tael_mean=seq(from=2,to=3 ,by=0.1)
- 
- threshold_tael_laplace=seq(from=2,to=3 ,by=0.1)
- 
+threshold_opt=seq(from=0,to=60,by= 0.1)
+
+threshold_app=seq(from=0,to=60,by= 0.1)
+
+threshold_ks=seq(from=0,to=60,by= 0.1)
+
+threshold_el_mean=0
+
+threshold_el_laplace=0
+
+threshold_ael_mean=0
+
+threshold_ael_laplace=0
+
+threshold_tel_mean=0
+
+threshold_tel_laplace=0
+
+threshold_tael_mean=0
+
+threshold_tael_laplace=0
 
   
 m=200

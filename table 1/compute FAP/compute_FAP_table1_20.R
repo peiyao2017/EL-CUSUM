@@ -10,15 +10,15 @@ repetition=1000
 d=1
 
 
-threshold_opt=0
+threshold_opt=seq(from=0,to=60,by= 0.1)
 
-threshold_app=0
+threshold_app=seq(from=0,to=60,by= 0.1)
 
-threshold_ks=0
+threshold_ks=seq(from=0,to=60,by= 0.1)
 
 threshold_el_mean=0
 
-threshold_el_laplace=seq(from=35,to=50,by= 1)
+threshold_el_laplace=0
 
 threshold_ael_mean=0
 
